@@ -4,14 +4,14 @@
 
 禁止大范围宣传本项目，谢谢配合
 
-也请不要滥用本项目(
+也请不要滥用本项目
 
 本项目米游币部分参考[XiaoMiku01/miyoubiAuto](https://github.com/XiaoMiku01/miyoubiAuto)进行编写
 
 - 此项目的用途
 
-  这是一个米游社的辅助签到项目，包含了米游币、崩坏 2、崩坏 3、原神、未定事件簿
-  已经支持米哈游国内正在运营的全部游戏的米游社签到(2022-7-19)
+  这是一个米游社的辅助签到项目，包含了米游币、崩坏学院2、崩坏3、原神、未定事件簿、崩坏:星穹铁道
+  已经支持米哈游国内正在运营的全部游戏的米游社签到(2022-4-26)
 
 ## 如何使用程序
 
@@ -86,6 +86,22 @@ var cookie=document.cookie;var ask=confirm('Cookie:'+cookie+'\n\nDo you want to 
 
 14. **此时 Cookie 已经获取完毕了**
 
+## 海外版获取Cookie
+
+1. 打开你的浏览器,进入**无痕/隐身模式**
+
+2. 打开`https://act.hoyolab.com/bbs/event/signin/hkrpg/index.html?act_id=e202303301540311`并进行登入操作
+
+3. 按下键盘上的`F12`或右键检查,打开开发者工具,在控制台输入:
+
+    ```javascript
+    document.cookie
+    ```
+
+4. 从`ltoken=....`开始复制到结尾
+
+5. 将获取到的 Cookie 粘贴到之前获取到 OS 的 Cookie 里面
+
 ## 获取设备 UA
 
 1. 使用常用的移动端设备访问 `https://www.ip138.com/useragent/`
@@ -93,6 +109,20 @@ var cookie=document.cookie;var ask=confirm('Cookie:'+cookie+'\n\nDo you want to 
 2. 复制网页内容中的 `客户端获取的UserAgent`
 
 3. 替换配置文件中 `useragent` 的原始内容
+
+## 关于如何获取云原神的 token（本方案由 [Anye](https://github.com/anye1844) 提供）
+
+1. 建议使用windows电脑获取云原神token
+
+2. 下载安装 [云原神PC客户端](https://mhyy.mihoyo.com/)
+
+3. 下载安装 [Http Debugger Pro](https://www.httpdebugger.com/)
+
+4. 打开 Http Debugger Pro，点击```Decrypt SSL```安装证书以解析HTTPS流量
+![](./img/1.png)
+
+5. 在```Http Debugger Pro```中点击```Start```，启动```云原神```，登录账号，返回```Http Debugger Pro```中```Ctrl+F```搜索x-rpc-combo_token，如图顺序操作，获取到 ```token```，形如```bi=xxx;ai=xxx;ci=xxx;ct=xxx;oi=xxx;si=xxx```
+![](./img/2.png)
 
 ## 使用 Docker 运行
 
@@ -211,13 +241,13 @@ docker-compose pull && docker-compose up -d
 定时类型：crontab
 定时规则：2 2 28 * *
 白名单：ql_main.py
-依赖文件：error|mihoyo|genshin|honkai3rd|log|push|req|set|tools|con|acc|honkai2|tearsofthemis|captcha|main|gamecheckin|honkaisr
+依赖文件：error|mihoyo|genshin|honkai3rd|log|push|req|set|tools|con|acc|honkai2|tearsofthemis|captcha|main|gamecheckin|honkaisr|hoyo_checkin|hoyo_gs|hoyo_sr
 ```
 
 方式 2：指令拉取
 
 ```sh
-ql repo https://github.com/Womsxd/MihoyoBBSTools.git "ql_main.py" "" "error|mihoyo|genshin|honkai3rd|log|push|req|set|tools|con|acc|honkai2|tearsofthemis|captcha|main|gamecheckin|honkaisr"
+ql repo https://github.com/Womsxd/MihoyoBBSTools.git "ql_main.py" "" "error|mihoyo|genshin|honkai3rd|log|push|req|set|tools|con|acc|honkai2|tearsofthemis|captcha|main|gamecheckin|honkaisr|hoyo_checkin|hoyo_gs|hoyo_sr"
 ```
 
 ### 2.环境变量添加
@@ -292,3 +322,7 @@ PyYAML: [github](https://github.com/yaml/pyyaml) [pypi](https://pypi.org/project
 ## 鸣谢
 
 [JetBrains](https://jb.gg/OpenSource)
+
+[本项目的Contributors](https://github.com/Womsxd/MihoyoBBSTools/graphs/contributors)
+
+还有正在使用这份程序的你
