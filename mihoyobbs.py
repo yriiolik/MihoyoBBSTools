@@ -31,7 +31,7 @@ class Mihoyobbs:
             "x-rpc-device_model": "Mi 10",
             "Referer": "https://app.mihoyo.com",
             "Host": "bbs-api.mihoyo.com",
-            "User-Agent": "okhttp/4.8.0"
+            "User-Agent": "okhttp/4.9.3"
         }
         self.task_do = {
             "bbs_sign": False,
@@ -109,7 +109,9 @@ class Mihoyobbs:
     def get_list(self) -> list:
         temp_list = []
         log.info("正在获取帖子列表......")
-        req = http.get(url=setting.bbs_post_list_url.format(setting.mihoyobbs_List_Use[0]["forumId"]),
+        req = http.get(url=setting.bbs_post_list_url,
+                       params={"forum_id": setting.mihoyobbs_List_Use[0]["forumId"],
+                               "is_good": False, "is_hot": False, "page_size": 20, "sort_type": 1},
                        headers=self.headers)
         data = req.json()["data"]["list"]
         while len(temp_list) < 5:
@@ -131,6 +133,7 @@ class Mihoyobbs:
                 for retry_count in range(2):
                     header["DS"] = tools.get_ds2("", json.dumps({"gids": forum["id"]}))
                     req = http.post(url=setting.bbs_sign_url, json={"gids": forum["id"]}, headers=header)
+                    log.debug(req.text)
                     data = req.json()
                     if data["retcode"] == 1034:
                         log.warning("社区签到触发验证码")
@@ -155,7 +158,9 @@ class Mihoyobbs:
         else:
             log.info("正在看帖......")
             for i in range(self.task_do["bbs_read_num"]):
-                req = http.get(url=setting.bbs_detail_url.format(self.postsList[i][0]), headers=self.headers)
+                req = http.get(url=setting.bbs_detail_url, params={"post_id": self.postsList[i][0]},
+                               headers=self.headers)
+                log.debug(req.text)
                 data = req.json()
                 if data["message"] == "OK":
                     log.debug("看帖：{} 成功".format(self.postsList[i][1]))
@@ -172,6 +177,7 @@ class Mihoyobbs:
         for i in range(self.task_do["bbs_like_num"]):
             req = http.post(url=setting.bbs_like_url, headers=header,
                             json={"post_id": self.postsList[i][0], "is_cancel": False})
+            log.debug(req.text)
             data = req.json()
             if data["message"] == "OK":
                 log.debug("点赞：{} 成功".format(self.postsList[i][1]))
@@ -199,7 +205,9 @@ class Mihoyobbs:
         else:
             log.info("正在执行分享任务......")
             for i in range(3):
-                req = http.get(url=setting.bbs_share_url.format(self.postsList[0][0]), headers=self.headers)
+                req = http.get(url=setting.bbs_share_url, params={"entity_id": self.postsList[0][0], "entity_type": 1},
+                               headers=self.headers)
+                log.debug(req.text)
                 data = req.json()
                 if data["message"] == "OK":
                     log.debug(f"分享：{self.postsList[0][1]} 成功")
