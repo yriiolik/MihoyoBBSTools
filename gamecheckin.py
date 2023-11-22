@@ -81,10 +81,10 @@ class GameCheckin:
 
     def check_in(self, account):
         header = self.headers.copy()
-        retries = 3
+        retries = 9
         for i in range(1, retries + 1):
             if i > 1:
-                log.info(f'触发验证码，即将进行第 {i} 次重试，最多 3 次')
+                log.info(f'触发验证码，即将进行第 {i} 次重试，最多 {retries} 次')
             req = http.post(url=self.sign_api, headers=header,
                             json={'act_id': self.act_id, 'region': account[2], 'uid': account[1]})
             if req.status_code == 429:
