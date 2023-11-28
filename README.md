@@ -29,7 +29,7 @@
 
   6. 请使用 vscode/notepad++等文本编辑器打开上一步复制好的配置文件
 
-  7. **使用[获取 Cookie](#获取米游社Cookie)里面的方法来获取米游社 Cookie**
+  7. **使用[获取 Cookie](#获取米游社-Cookie)里面的方法来获取米游社 Cookie**
 
   8. 将复制的 Cookie 粘贴到`config.yaml`的`cookie:" "`中(在`account`里面)
 
@@ -151,6 +151,28 @@ docker-compose logs -f
 ```text
 docker-compose stop
 docker-compose pull && docker-compose up -d
+```
+
+## 使用 kubernetes 运行
+
+1. 填写拷贝一份配置文件至 kube 文件夹并进入
+
+```bash
+cp config/config.yaml.example kube/config.yaml
+cd kube
+```
+
+2. 创建 ConfigMap 并启动服务
+
+```bash
+kubectl create cm mihoyo-conf --from-file config.yaml
+kubectl apply -f deployment.yaml
+```
+
+3. 查看结果
+
+```bash
+kubectl logs $(kubectl get pod -l app=mihoyo -o jsonpath="{.items[0].metadata.name}") -f --tail 40
 ```
 
 ## 使用 python 运行(screen)

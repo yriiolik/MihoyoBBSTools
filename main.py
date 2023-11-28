@@ -27,6 +27,7 @@ def checkin_game(game_name, game_module, game_print_name=""):
         return return_data
     return ""
 
+
 def run_bbs():
     return_data = "米游社: "
     bbs = mihoyobbs.Mihoyobbs()
@@ -63,6 +64,15 @@ def main():
     return_data = "\n"
     config.load_config()
     if config.config["enable"]:
+        # 整理 cookie，在字段重复时优先使用最后出现的值
+        cookie_dict = {}
+        for cookie in config.config["account"]["cookie"].split(";"):
+            cookie = cookie.strip()
+            if cookie == "":
+                continue
+            key, value = cookie.split("=", 1)
+            cookie_dict[key] = value
+        config.config["account"]["cookie"] = "; ".join([f"{key}={value}" for key, value in cookie_dict.items()])
         # 检测参数是否齐全，如果缺少就进行登入操作
         if config.config["account"]["login_ticket"] == "" or config.config["account"]["stuid"] == "" or \
                 config.config["account"]["stoken"] == "":
@@ -86,6 +96,7 @@ def main():
         ret_code = 0
         if config.config["mihoyobbs"]["enable"]:
             return_data += run_bbs()
+        # 国服
         if config.config['games']['cn']["enable"]:
             # 崩坏2签到
             return_data += checkin_game("honkai2", honkai2.Honkai2, "崩坏学园2")
@@ -97,12 +108,7 @@ def main():
             return_data += checkin_game("genshin", genshin.Genshin, "原神")
             # 崩铁
             return_data += checkin_game("honkai_sr", honkaisr.Honkaisr, "崩坏: 星穹铁道")
-            if config.config['cloud_games']['genshin']["enable"] \
-                    and config.config['cloud_games']['genshin']['token'] != "":
-                log.info("正在进行云原神签到")
-                cloud_ys = cloud_genshin.CloudGenshin()
-                data = cloud_ys.sign_account()
-                return_data += "\n\n" + data
+        # 国际
         if config.config['games']['os']["enable"]:
             log.info("海外版:")
             return_data += "\n\n" + "海外版:"
@@ -114,6 +120,13 @@ def main():
                 log.info("正在进行崩坏:星穹铁道签到")
                 data = hoyo_sr.run()
                 return_data += "\n\n" + data
+        # 云游戏
+        if config.config['cloud_games']['genshin']["enable"] \
+                and config.config['cloud_games']['genshin']['token'] != "":
+            log.info("正在进行云原神签到")
+            cloud_ys = cloud_genshin.CloudGenshin()
+            data = cloud_ys.sign_account()
+            return_data += "\n\n" + data
         if "触发验证码" in return_data:
             ret_code = 3
         return ret_code, return_data
