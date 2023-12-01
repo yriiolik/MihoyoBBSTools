@@ -1,14 +1,14 @@
 # 米游社的Salt
 # java提取，会跟随版本更新
-mihoyobbs_salt = "AcpNVhfh0oedCobdCyFV8EE1jMOVDy9q"
-mihoyobbs_salt_web = "1OJyMNCqFlstEQqqMOv0rKCIdTOoJhNt"
+mihoyobbs_salt = "pIlzNr5SAZhdnFW8ZxauW8UlxRdZc45r"
+mihoyobbs_salt_web = "0wr0OpH2BNuekYrfeRwkiDdshvt10cTY"
 # so提取 一般不会变
 mihoyobbs_salt_x4 = "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs"
 mihoyobbs_salt_x6 = "t0qEgfub6cvueAPgR5m9aQWWVciEer7v"
 # 部分接口要带
 mihoyobbs_verify_key = "bll8iq97cem8"
 # 米游社的版本
-mihoyobbs_version = "2.60.1"  # Salt和Version相互对应
+mihoyobbs_version = "2.62.2"  # Salt和Version相互对应
 # 米游社的客户端类型
 mihoyobbs_Client_type = "2"  # 1为ios 2为安卓
 mihoyobbs_Client_type_web = "5"  # 4为pc web 5为mobile web
@@ -91,7 +91,7 @@ headers = {
 
 # 通用设置
 bbs_api = "https://bbs-api.miyoushe.com"
-web_api = "https://api-takumi.miyoushe.com"
+web_api = "https://api-takumi.mihoyo.com"
 account_Info_url = web_api + "/binding/api/getUserGameRolesByCookie"
 
 # 米游社的API列表
@@ -123,10 +123,7 @@ honkai3rd_act_id = "e202306201626331"
 tearsofthemis_act_id = "e202202251749321"
 
 # 原神自动签到相关的设置
-genshin_act_id = "e202009291139501"
-genshin_checkin_rewards = f'{web_api}/event/bbs_sign_reward/home'
-genshin_is_signurl = f"{web_api}/event/bbs_sign_reward/info"
-genshin_signurl = f"{web_api}/event/bbs_sign_reward/sign"
+genshin_act_id = "e202311201442471"
 
 # 星穹铁道自动签到相关设置
 honkai_sr_act_id = "e202304121516551"
