@@ -83,7 +83,7 @@ def smtp(send_title, push_message):
     import smtplib
     from email.mime.text import MIMEText
     
-    IMAGE_API = "http://api.iw233.cn/api.php?sort=random&type=json"
+    IMAGE_API = "https://api.iw233.cn/api.php?sort=random&type=json"
     
     try:
         image_url = http.get(IMAGE_API).json()["pic"][0]
@@ -186,6 +186,9 @@ def feishubot(send_title, push_message):
 
 # Bark
 def bark(send_title, push_message):
+    # make send_title and push_message to url encode
+    send_title = urllib.parse.quote_plus(send_title)
+    push_message = urllib.parse.quote_plus(push_message)
     rep = http.get(
         url=f'{cfg.get("bark", "api_url")}/{cfg.get("bark", "token")}/{send_title}/{push_message}?icon=https://cdn'
             f'.jsdelivr.net/gh/tanmx/pic@main/mihoyo/{cfg.get("bark", "icon")}.png'
@@ -236,6 +239,17 @@ def webhook(send_title, push_message):
         }
     ).json()
     log.info(f"推送结果：{rep.get('errmsg')}")
+
+# qmsg
+def qmsg(send_title, push_message):
+    rep = http.post(
+        url=f'https://qmsg.zendee.cn/send/{cfg.get("qmsg", "key")}',
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        data={
+            "msg":send_title+"\n"+push_message
+        }
+    ).json()
+    log.info(f"推送结果：{rep['reason']}")
 
 def push(status, push_message):
     if not load_config():
