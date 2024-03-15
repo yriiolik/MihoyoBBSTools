@@ -5,7 +5,7 @@ import base64
 import config
 import urllib
 import hashlib
-from request import http
+from request import http, get_new_session_use_proxy
 from loghelper import log
 from configparser import ConfigParser, NoOptionError
 
@@ -21,20 +21,22 @@ def load_config():
         return False
 
 
-def title(status):
-    if status == 0:
-        return "「米游社脚本」执行成功!"
-    elif status == 1:
-        return "「米游社脚本」执行失败!"
-    elif status == 2:
-        return "「米游社脚本」部分账号执行失败！"
-    elif status == 3:
-        return "「米游社脚本」游戏道具签到触发验证码！"
+title = {
+    0: "「米游社脚本」执行成功!",
+    1: "「米游社脚本」执行失败!",
+    2: "「米游社脚本」部分账号执行失败！",
+    3: "「米游社脚本」游戏道具签到触发验证码！"
+}
 
 
 # telegram的推送
 def telegram(send_title, push_message):
-    http.post(
+    http_proxy = cfg.get('telegram', 'http_proxy', fallback=None)
+    if http_proxy:
+        session = get_new_session_use_proxy(http_proxy)
+    else:
+        session = http
+    session.post(
         url="https://{}/bot{}/sendMessage".format(cfg.get('telegram', 'api_url'), cfg.get('telegram', 'bot_token')),
         data={
             "chat_id": cfg.get('telegram', 'chat_id'),
@@ -82,9 +84,9 @@ def cqhttp(send_title, push_message):
 def smtp(send_title, push_message):
     import smtplib
     from email.mime.text import MIMEText
-    
+
     IMAGE_API = "https://api.iw233.cn/api.php?sort=random&type=json"
-    
+
     try:
         image_url = http.get(IMAGE_API).json()["pic"][0]
     except:
@@ -116,7 +118,7 @@ def wecom(send_title, push_message):
     except NoOptionError:
         # 没有配置时赋默认值
         touser = '@all'
-    
+
     push_token = http.post(
         url=f'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corpid}&corpsecret={secret}',
         data=""
@@ -131,6 +133,21 @@ def wecom(send_title, push_message):
         "safe": 0
     }
     http.post(f'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={push_token}', json=push_data)
+
+# 企业微信机器人
+def wecomrobot(send_title, push_message):
+    rep = http.post(
+        url=f'{cfg.get("wecomrobot", "url")}',
+        headers={"Content-Type": "application/json; charset=utf-8"},
+        json={
+          "msgtype": "text",
+          "text": {
+              "content": send_title + "\r\n" + push_message,
+              "mentioned_mobile_list": [f'{cfg.get("wecomrobot", "mobile")}']
+          }
+        }
+    ).json()
+    log.info(f"推送结果：{rep.get('errmsg')}")
 
 
 # pushdeer
@@ -160,7 +177,7 @@ def dingrobot(send_title, push_message):
         ).digest()
         sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
         api_url = f"{api_url}&timestamp={timestamp}&sign={sign}"
-    
+
     rep = http.post(
         url=api_url,
         headers={"Content-Type": "application/json; charset=utf-8"},
@@ -209,6 +226,7 @@ def gotify(send_title, push_message):
     ).json()
     log.info(f"推送结果：{rep.get('errmsg')}")
 
+
 # ifttt
 def ifttt(send_title, push_message):
     ifttt_event = cfg.get('ifttt', 'event')
@@ -227,7 +245,8 @@ def ifttt(send_title, push_message):
     else:
         log.info("推送完毕......")
     return 1
-    
+
+
 # webhook
 def webhook(send_title, push_message):
     rep = http.post(
@@ -240,42 +259,44 @@ def webhook(send_title, push_message):
     ).json()
     log.info(f"推送结果：{rep.get('errmsg')}")
 
+
 # qmsg
 def qmsg(send_title, push_message):
     rep = http.post(
         url=f'https://qmsg.zendee.cn/send/{cfg.get("qmsg", "key")}',
         headers={"Content-Type": "application/x-www-form-urlencoded"},
         data={
-            "msg":send_title+"\n"+push_message
+            "msg": send_title + "\n" + push_message
         }
     ).json()
     log.info(f"推送结果：{rep['reason']}")
 
+
 def push(status, push_message):
     if not load_config():
+        return 1
+    if not cfg.getboolean('setting', 'enable'):
         return 0
-    if cfg.getboolean('setting', 'enable'):
-        log.info("正在执行推送......")
-        func_names = cfg.get('setting', 'push_server').lower()
-        for func_name in func_names.split(","):
-            func = globals().get(func_name)
-            # print(func)
-            if not func:
-                log.warning("推送服务名称错误：请检查config/push.ini -> [setting] -> push_server")
-                return 0
-            log.debug(f"推送所用的服务为：{func_name}")
-            try:
-                if not config.update_config_need:
-                    func(title(status), push_message)
-                else:
-                    func('「米游社脚本」config可能需要手动更新',
-                        f'如果您多次收到此消息开头的推送，证明您运行的环境无法自动更新config，请手动更新一下，谢谢\r\n{title(status)}\r\n{push_message}')
-            except Exception as r:
-                log.warning(f"推送执行错误：{str(r)}")
-                return 0
+    log.info("正在执行推送......")
+    func_names = cfg.get('setting', 'push_server').lower()
+    for func_name in func_names.split(","):
+        func = globals().get(func_name)
+        if not func:
+            log.warning("推送服务名称错误：请检查config/push.ini -> [setting] -> push_server")
+            continue
+        log.debug(f"推送所用的服务为: {func_name}")
+        try:
+            if not config.update_config_need:
+                func(title.get(status, ''), push_message)
             else:
-                log.info(f"{func_name} - 推送完毕......")
-    return 1
+                func('「米游社脚本」config可能需要手动更新',
+                     f'如果您多次收到此消息开头的推送，证明您运行的环境无法自动更新config，请手动更新一下，谢谢\r\n'
+                     f'{title.get(status, "")}\r\n{push_message}')
+        except Exception as r:
+            log.warning(f"推送执行错误：{str(r)}")
+            return 1
+        log.info(f"{func_name} - 推送完毕......")
+    return 0
 
 
 if __name__ == "__main__":

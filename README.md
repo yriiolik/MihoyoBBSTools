@@ -4,16 +4,21 @@
 
 禁止大范围宣传本项目，谢谢配合
 
+请不要发B站，谢谢
+
 也请不要滥用本项目
 
 ⚠️ **对于Fork的开发者/用户，请不要滥用GitHub Action，因为 GitHub 将计算您的分支 GitHub Actions 使用量并归属到上游存储库，这可能导致 GitHub 停用此上游存储库**
 
-本项目米游币部分参考[XiaoMiku01/miyoubiAuto](https://github.com/XiaoMiku01/miyoubiAuto)进行编写
-
 - 此项目的用途
 
-  这是一个米游社的辅助签到项目，包含了米游币、崩坏学院2、崩坏3、原神、未定事件簿、崩坏:星穹铁道
-  已经支持米哈游国内在运营的全部游戏的米游社签到，以及米游币自动获取
+  这是一个米游社的辅助签到项目，包含了以下功能
+
+  1.自动获取米游币
+
+  2.支持国服：崩坏学院2、崩坏3、未定事件簿、原神、崩坏：星穹铁道的游戏签到
+
+  3.支持国际服：崩坏3、未定事件簿、原神、崩坏：星穹铁道的游戏签到
 
 ## 如何使用程序
 
@@ -116,7 +121,7 @@ var cookie=document.cookie;var ask=confirm('Cookie:'+cookie+'\n\nDo you want to 
 
 1. 建议使用打开浏览器的无痕/隐私/InPrivate模式
 
-2. 下载 [云原神网页版](https://ys.mihoyo.com/cloud/#/)
+2. 打开 [云原神网页版](https://ys.mihoyo.com/cloud/#/)
 
 3. 按下键盘上的`F12`或右键检查,打开开发者工具,在打开后登入账号
 
@@ -211,13 +216,13 @@ kubectl logs $(kubectl get pod -l app=mihoyo -o jsonpath="{.items[0].metadata.na
 
 1. 下载本项目
 
-2. 在脚本目录执行`pip3 install -r requirements_qcloud.txt -t .`
+2. 在脚本目录执行`pip3 install -r requirements.txt -t .`
 
 3. 在本地完整运行一次。
 
 4. 打开并登录[云函数控制台](https://console.cloud.tencent.com/scf/list)。
 
-5. 新建云函数 - 自定义创建，函数类型选`事件函数`，部署方式选`代码部署`，运行环境选 `Python3.6`.
+5. 新建云函数 - 自定义创建，函数类型选`事件函数`，部署方式选`代码部署`，运行环境选 `Python 3.10(公测版)`.
 
 6. 提交方法选`本地上传文件夹`，并在下方的函数代码处上传整个项目文件夹。
 
@@ -231,7 +236,7 @@ kubectl logs $(kubectl get pod -l app=mihoyo -o jsonpath="{.items[0].metadata.na
 
 - 阿里云
   1. 下载本项目
-  2. 在脚本目录执行`pip3 install -r requirements.txt -t .`，如果无法选择`Python3.9`环境请执行`pip3 install -r requirements_qcloud.txt -t .`
+  2. 在脚本目录执行`pip3 install -r requirements.txt -t .`
   3. 在本地完整运行一次。
   4. 打开并登录[函数计算 FC](https://fcnext.console.aliyun.com/cn-hangzhou/services)。注意左上方显示的地区，可点击切换其他地区。
   5. 创建服务 （日志功能可能产生费用，建议关闭）
@@ -263,24 +268,24 @@ kubectl logs $(kubectl get pod -l app=mihoyo -o jsonpath="{.items[0].metadata.na
 定时类型：crontab
 定时规则：2 2 28 * *
 白名单：ql_main.py
-依赖文件：error|mihoyo|genshin|honkai3rd|log|push|req|set|tools|con|acc|honkai2|tearsofthemis|captcha|main|gamecheckin|honkaisr|hoyo_checkin|hoyo_gs|hoyo_sr
+依赖文件：error|mihoyo|log|push|req|set|tools|con|acc|captcha|main|gamecheckin|hoyo_checkin|competition|cloud_genshin
 ```
 
 方式 2：指令拉取
 
 ```sh
-ql repo https://github.com/Womsxd/MihoyoBBSTools.git "ql_main.py" "" "error|mihoyo|genshin|honkai3rd|log|push|req|set|tools|con|acc|honkai2|tearsofthemis|captcha|main|gamecheckin|honkaisr|hoyo_checkin|hoyo_gs|hoyo_sr"
+ql repo https://github.com/Womsxd/MihoyoBBSTools.git "ql_main.py" "" "error|mihoyo|log|push|req|set|tools|con|acc|captcha|main|gamecheckin|hoyo_checkin|competition|cloud_genshin"
 ```
 
 ### 2.环境变量添加
 
 在青龙面板环境变量中添加以下变量
 
-| 名称 | 值 | 功能 |
-| --- | --- | --- |
-| AutoMihoyoBBS_config_path | /ql/data/config/ | 设置配置文件路径（必选） |
-| AutoMihoyoBBS_config_multi | 1 | 开启多用户（可选） |
-| AutoMihoyoBBS_config_prefix | mhy_ | 自定义文件开头(单用户可选，多用户推荐) |
+| 名称                          | 值                | 功能                   |
+|-----------------------------|------------------|----------------------|
+| AutoMihoyoBBS_config_path   | /ql/data/config/ | 设置配置文件路径（必选）         |
+| AutoMihoyoBBS_config_multi  | 1                | 开启多用户（可选）            |
+| AutoMihoyoBBS_config_prefix | mhy_             | 自定义文件开头(单用户可选，多用户推荐) |
 
 **注意！仅多用户需添加变量```AutoMihoyoBBS_config_multi```**
 
@@ -319,13 +324,15 @@ cp /ql/data/repo/Womsxd_MihoyoBBSTools/config/config.yaml.example /ql/data/confi
 
 ## 使用的第三方库
 
-requests: [github](https://github.com/psf/requests) [pypi](https://pypi.org/project/requests/) (当 httpx 无法使用时使用)
+~~requests~~: [GitHub](https://github.com/psf/requests) [pypi](https://pypi.org/project/requests/)
 
-httpx: [github](https://github.com/encode/httpx) [pypi](https://pypi.org/project/httpx/)
+requests仅作为在httpx无法使用时的备用选择，可能未来版本会进行移除
 
-crontab: [github](https://github.com/josiahcarlson/parse-crontab) [pypi](https://pypi.org/project/crontab/)
+httpx: [GitHub](https://github.com/encode/httpx) [pypi](https://pypi.org/project/httpx/)
 
-PyYAML: [github](https://github.com/yaml/pyyaml) [pypi](https://pypi.org/project/PyYAML/)
+crontab: [GitHub](https://github.com/josiahcarlson/parse-crontab) [pypi](https://pypi.org/project/crontab/)
+
+PyYAML: [GitHub](https://github.com/yaml/pyyaml) [pypi](https://pypi.org/project/PyYAML/)
 
 ## 关于使用 Github Actions 运行
 
@@ -333,7 +340,6 @@ PyYAML: [github](https://github.com/yaml/pyyaml) [pypi](https://pypi.org/project
 
 也**不会**处理使用`Github Actions`执行有关的 issues！
 
-推荐使用 阿里云/腾讯云 的云函数来进行每日自动执行脚本。
 
 ## Stargazers over time
 
@@ -346,6 +352,8 @@ PyYAML: [github](https://github.com/yaml/pyyaml) [pypi](https://pypi.org/project
 ## 鸣谢
 
 [JetBrains](https://jb.gg/OpenSource)
+
+[XiaoMiku01/miyoubiAuto](https://github.com/XiaoMiku01/miyoubiAuto)
 
 [本项目的Contributors](https://github.com/Womsxd/MihoyoBBSTools/graphs/contributors)
 

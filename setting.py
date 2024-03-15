@@ -12,39 +12,17 @@ mihoyobbs_version = "2.67.1"  # Salt和Version相互对应
 # 米游社的客户端类型
 mihoyobbs_Client_type = "2"  # 1为ios 2为安卓
 mihoyobbs_Client_type_web = "5"  # 4为pc web 5为mobile web
-# 云原神相关数据
-cloudgenshin_Version = "4.0.0"
 
 # 米游社的分区列表
-mihoyobbs_List = [{
-    "id": "1",
-    "forumId": "1",
-    "name": "崩坏3",
-}, {
-    "id": "2",
-    "forumId": "26",
-    "name": "原神",
-}, {
-    "id": "3",
-    "forumId": "30",
-    "name": "崩坏2",
-}, {
-    "id": "4",
-    "forumId": "37",
-    "name": "未定事件簿",
-}, {
-    "id": "5",
-    "forumId": "34",
-    "name": "大别野",
-}, {
-    "id": "6",
-    "forumId": "52",
-    "name": "崩坏：星穹铁道",
-}, {
-    "id": "8",
-    "forumId": "57",
-    "name": "绝区零",
-}]
+mihoyobbs_List = {
+    1: {"id": "1", "forumId": "1", "name": "崩坏3"},
+    2: {"id": "2", "forumId": "26", "name": "原神"},
+    3: {"id": "3", "forumId": "30", "name": "崩坏2"},
+    4: {"id": "4", "forumId": "37", "name": "未定事件簿"},
+    5: {"id": "5", "forumId": "34", "name": "大别野"},
+    6: {"id": "6", "forumId": "52", "name": "崩坏：星穹铁道"},
+    8: {"id": "8", "forumId": "57", "name": "绝区零"}
+}
 
 game_id2name = {
     "bh2_cn": "崩坏2",
@@ -63,8 +41,6 @@ game_id2config = {
     "hkrpg_cn": "honkaisr",
     "nap_cn": "zzz"
 }
-# Config Load之后run里面进行列表的选择
-mihoyobbs_List_Use = []
 
 # 游戏签到的请求头
 headers = {
@@ -131,6 +107,8 @@ cloud_genshin_api = "https://api-cloudgame.mihoyo.com"
 cloud_genshin_sgin = f"{cloud_genshin_api}/hk4e_cg_cn/wallet/wallet/get"
 
 # 接下来是国际服的内容
-
-os_lang = 'zh-cn'
 os_referer_url = "https://act.hoyolab.com/"
+os_genshin_act_id = "e202102251931481"
+os_honkai_sr_act_id = "e202303301540311"
+os_honkai3rd_act_id = "e202110291205111"
+os_tearsofthemis_act_id = "e202202281857121"
